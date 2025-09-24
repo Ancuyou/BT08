@@ -1,0 +1,303 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{admin/layout-admin.html}">-->
+
+<!--<body>-->
+<!--<section class="row" layout:fragment="content">-->
+
+<!--    <h3>Category Management (AJAX)</h3>-->
+
+<!--    <button class="btn btn-success mb-3" onclick="showAddModal()">+ Add Category</button>-->
+
+<!--    <table class="table table-bordered">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>ID</th>-->
+<!--            <th>Icon</th>-->
+<!--            <th>Name</th>-->
+<!--            <th>Actions</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody id="categoryTableBody"></tbody>-->
+<!--    </table>-->
+<!--    &lt;!&ndash; Modal thêm/sửa &ndash;&gt;-->
+<!--    <div class="modal fade" id="categoryModal" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <form id="categoryForm" enctype="multipart/form-data">-->
+<!--                    <div class="modal-header">-->
+<!--                        <h5 class="modal-title" id="modalTitle">Add Category</h5>-->
+<!--                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                    </div>-->
+<!--                    <div class="modal-body">-->
+<!--                        <input type="hidden" name="categoryId" id="categoryId"/>-->
+<!--                        <div class="mb-3">-->
+<!--                            <label class="form-label">Category Name</label>-->
+<!--                            <input type="text" class="form-control" name="categoryName" id="categoryName" required>-->
+<!--                        </div>-->
+<!--                        <div class="mb-3">-->
+<!--                            <label class="form-label">Icon</label>-->
+<!--                            <input type="file" class="form-control" name="icon" id="icon">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                        <button type="submit" class="btn btn-primary">Save</button>-->
+<!--                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--</section>-->
+
+<!--<script th:inline="none">-->
+<!--    const apiUrl = "/api/category";-->
+
+<!--    function loadCategories() {-->
+<!--        $.getJSON(apiUrl, function (data) {-->
+<!--            let rows = '';-->
+<!--            data.forEach(c => {-->
+<!--                rows += `-->
+<!--          <tr>-->
+<!--            <td>${c.categoryId}</td>-->
+<!--            <td><img src="/images/${c.icon}" style="width:50px"></td>-->
+<!--            <td>${c.categoryName}</td>-->
+<!--            <td>-->
+<!--              <button class="btn btn-warning btn-sm" onclick="showEditModal(${c.categoryId}, '${c.categoryName}')">Edit</button>-->
+<!--              <button class="btn btn-danger btn-sm" onclick="deleteCategory(${c.categoryId})">Delete</button>-->
+<!--            </td>-->
+<!--          </tr>`;-->
+<!--            });-->
+<!--            $("#categoryTableBody").html(rows);-->
+<!--        });-->
+<!--    }-->
+
+<!--    // Show modal thêm mới-->
+<!--    function showAddModal() {-->
+<!--        $("#modalTitle").text("Add Category");-->
+<!--        $("#categoryId").val('');-->
+<!--        $("#categoryName").val('');-->
+<!--        $("#icon").val('');-->
+<!--        $("#categoryModal").modal('show');-->
+<!--    }-->
+
+<!--    // Show modal sửa-->
+<!--    function showEditModal(id, name) {-->
+<!--        $("#modalTitle").text("Edit Category");-->
+<!--        $("#categoryId").val(id);-->
+<!--        $("#categoryName").val(name);-->
+<!--        $("#categoryModal").modal('show');-->
+<!--    }-->
+
+<!--    // Submit form (thêm + sửa)-->
+<!--    $("#categoryForm").submit(function (e) {-->
+<!--        e.preventDefault();-->
+<!--        let formData = new FormData(this);-->
+<!--        let id = $("#categoryId").val();-->
+<!--        let method = id ? "PUT" : "POST";-->
+<!--        let url = id ? apiUrl + "/updateCategory" : apiUrl + "/addCategory";-->
+
+<!--        $.ajax({-->
+<!--            url: url,-->
+<!--            type: method,-->
+<!--            data: formData,-->
+<!--            processData: false,-->
+<!--            contentType: false,-->
+<!--            success: function () {-->
+<!--                $("#categoryModal").modal('hide');-->
+<!--                loadCategories();-->
+<!--            },-->
+<!--            error: function () {-->
+<!--                alert("Error saving category!");-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+
+<!--    // Xoá category-->
+<!--    function deleteCategory(id) {-->
+<!--        if (confirm("Delete this category?")) {-->
+<!--            $.ajax({-->
+<!--                url: apiUrl + "/deleteCategory?categoryId=" + id,-->
+<!--                type: "DELETE",-->
+<!--                success: function () {-->
+<!--                    loadCategories();-->
+<!--                },-->
+<!--                error: function () {-->
+<!--                    alert("Error deleting category!");-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Tải dữ liệu khi load trang-->
+<!--    $(document).ready(function () {-->
+<!--        loadCategories();-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout-admin.html}">
+
+<body>
+<section class="row" layout:fragment="content">
+
+    <h3>Category Management (AJAX)</h3>
+
+    <button class="btn btn-success mb-3" onclick="showAddModal()">+ Add Category</button>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Icon</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="categoryTableBody"></tbody>
+    </table>
+
+    <!-- Modal thêm/sửa -->
+    <div class="modal fade" id="categoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="categoryForm" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Add Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="categoryId" id="categoryId"/>
+                        <div class="mb-3">
+                            <label class="form-label">Category Name</label>
+                            <input type="text" class="form-control" name="categoryName" id="categoryName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Icon</label>
+                            <input type="file" class="form-control" name="icon" id="icon">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<script th:inline="none">
+    const apiUrl = "/api/category";
+
+    // Load danh sách Category
+    function loadCategories() {
+        $.getJSON(apiUrl, function (res) {
+            if (!res.status) {
+                alert("Không lấy được dữ liệu: " + res.message);
+                return;
+            }
+            let rows = '';
+            res.body.forEach(c => {
+                rows += `
+                  <tr>
+                    <td>${c.categoryId}</td>
+                    <td><img src="/images/${c.icon}" style="width:50px"></td>
+                    <td>${c.categoryName}</td>
+                    <td>
+                      <button class="btn btn-warning btn-sm"
+                              onclick="showEditModal(${c.categoryId}, '${c.categoryName}')">Edit</button>
+                      <button class="btn btn-danger btn-sm"
+                              onclick="deleteCategory(${c.categoryId})">Delete</button>
+                    </td>
+                  </tr>`;
+            });
+            $("#categoryTableBody").html(rows);
+        });
+    }
+
+    // Show modal thêm mới
+    function showAddModal() {
+        $("#modalTitle").text("Add Category");
+        $("#categoryId").val('');
+        $("#categoryName").val('');
+        $("#icon").val('');
+        $("#categoryModal").modal('show');
+    }
+
+    // Show modal sửa
+    function showEditModal(id, name) {
+        $("#modalTitle").text("Edit Category");
+        $("#categoryId").val(id);
+        $("#categoryName").val(name);
+        $("#icon").val('');
+        $("#categoryModal").modal('show');
+    }
+
+    // Submit form (thêm + sửa)
+    $("#categoryForm").submit(function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        let id = $("#categoryId").val();
+        let method = id ? "PUT" : "POST";
+        let url = id ? apiUrl + "/updateCategory" : apiUrl + "/addCategory";
+
+        $.ajax({
+            url: url,
+            type: method,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.status) {
+                    $("#categoryModal").modal('hide');
+                    loadCategories();
+                } else {
+                    alert("Lỗi: " + res.message);
+                }
+            },
+            error: function () {
+                alert("Error saving category!");
+            }
+        });
+    });
+
+    // Xoá category
+    function deleteCategory(id) {
+        if (confirm("Delete this category?")) {
+            $.ajax({
+                url: apiUrl + "/deleteCategory?categoryId=" + id,
+                type: "DELETE",
+                success: function (res) {
+                    if (res.status) {
+                        loadCategories();
+                    } else {
+                        alert("Lỗi: " + res.message);
+                    }
+                },
+                error: function () {
+                    alert("Error deleting category!");
+                }
+            });
+        }
+    }
+
+    // Tải dữ liệu khi load trang
+    $(document).ready(function () {
+        loadCategories();
+    });
+</script>
+</body>
+</html>
+
+
+
+
