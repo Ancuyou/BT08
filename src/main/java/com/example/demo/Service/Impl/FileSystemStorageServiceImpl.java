@@ -23,7 +23,7 @@ public class FileSystemStorageServiceImpl implements IStorageService {
     @Override
     public String getSorageFilename(MultipartFile file, String id) {
         String ext = FilenameUtils.getExtension(file.getOriginalFilename());
-        return "p" + id + "." + ext;
+        return id + "." + ext; // không cần "p"
     }
     public FileSystemStorageServiceImpl(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());

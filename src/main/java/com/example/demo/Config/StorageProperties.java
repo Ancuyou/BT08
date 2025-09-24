@@ -1,11 +1,19 @@
 package com.example.demo.Config;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Data;
-
-@Data
 @ConfigurationProperties("storage")
 public class StorageProperties {
-    private String location = "uploads";
+
+    /**
+     * Thư mục gốc để lưu file upload.
+     */
+    private String location = "uploads"; // mặc định thư mục uploads ngoài project
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
