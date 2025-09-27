@@ -30,7 +30,7 @@ public class Product implements Serializable {
     @Column(nullable = false)
     private double discount;
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "YYYY-MM-DD hh:mi:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
     @Column(nullable = false)
     private short status;

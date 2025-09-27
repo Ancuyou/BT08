@@ -12,8 +12,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    //Tìm Kiếm theo nội dung tên
     List<Product> findByProductNameContaining(String name);
-    //Tìm kiếm và Phân trang
     Page<Product> findByProductNameContaining(String name,Pageable pageable);
+    List<Product> findByCategoryCategoryId(Long categoryId);
+    Page<Product> findByCategoryCategoryId(Long categoryId, Pageable pageable);
+
+    Optional<Product> findByproductName(String productName);
 }

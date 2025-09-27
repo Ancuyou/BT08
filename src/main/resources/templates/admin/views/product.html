@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/Layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Management (AJAX)</title>
+</head>
+<body>
+<section class="row" layout:fragment="content">
+    <div class="col mt-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>List Product</span>
+                <button class="btn btn-success btn-sm" onclick="openAddModal()">Add New Product</button>
+            </div>
+            <div class="card-body">
+                <div id="alert-container"></div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khoá để tìm">
+                            <button class="btn btn-outline-primary" onclick="searchProducts()">Search</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-outline-secondary" onclick="loadProducts()">Refresh</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped" id="productTable">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Image</th>
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="productTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="emptyState" class="text-center text-muted" style="display: none;">
+                    No Product Found
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add/Edit -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <form id="productForm" enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalTitle">Add Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="productId" name="productId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <input type="text" id="productName" name="productName" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" id="quantity" name="quantity" class="form-control" min="0" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="unitPrice" class="form-label">Unit Price</label>
+                                <input type="number" id="unitPrice" name="unitPrice" step="0.01" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="discount" class="form-label">Discount</label>
+                                <input type="number" id="discount" name="discount" step="0.01" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select id="status" name="status" class="form-control">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="categoryId" class="form-label">Category</label>
+                                <select id="categoryId" name="categoryId" class="form-control"></select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="images" class="form-label">Image</label>
+                                <input type="file" id="images" name="images" class="form-control" accept="image/*">
+                                <img id="imagePreview" style="max-height:120px; display:none;" class="mt-2"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" name="description" rows="5" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Modal (reuse) -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure to delete <span id="deleteName"></span>?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<div layout:fragment="scripts">
+    <script src="/js/product.js"></script>
+    <script>
+        $(document).ready(function() {
+            loadProducts();
+            loadCategoriesForSelect(); // load categories to select
+        });
+    </script>
+</div>
+</body>
+</html>
